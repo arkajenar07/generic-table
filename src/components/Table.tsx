@@ -1,22 +1,22 @@
 import React from "react";
 
-export type ColumnDefs = {
+export type ColumnDefs<T> = {
     title: string;
 } & (
         | {
-            field: string;
+            field: keyof T;
         }
         | {
-            render: (rowData: Record<string, any>) => React.ReactNode;
+            render: (rowData: T) => React.ReactNode;
         }
     );
 
-const Table = ({
+const Table = <T,>({
     columnDefs,
     data,
 }: {
-    columnDefs: ColumnDefs[];
-    data: Record<string, any>[];
+    columnDefs: ColumnDefs<T>[];
+    data: T[];
 }) => {
     return (
         <table className="min-w-full divide-y overflow-hidden rounded-lg divide-gray-800 shadow-lg">
@@ -34,7 +34,7 @@ const Table = ({
                     <tr key={index} className="cursor-pointer hover:bg-gray-100">
                         {columnDefs.map((column, index) => (
                             <td key={index} className="px-6 py-4 whitespace-nowrap">
-                                {"field" in column ? rowData[column.field!] : column.render ? column.render(rowData) : null}
+                                {"field" in column ? String(rowData[column.field]) : column.render ? column.render(rowData) : null}
                             </td>
                         ))}
                     </tr>
